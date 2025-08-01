@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+
+<div class="container dashboard-container">
+  <h2 class="mb-4 text-center">Admin Dashboard</h2>
+  <p class="text-center text-muted">Welcome, <strong><%= user.email %></strong></p>
+
+  <div class="card-custom text-center">
+    <h4 class="mb-3">Exam Management</h4>
+    <a href="/exam/create" class="btn btn-success btn-action">Create New Exam</a>
+    <a href="/exam/list" class="btn btn-info btn-action">View Exams List</a>
+  </div>
+
+  <!-- <div class="card-custom text-center">
+    <h4 class="mb-3">Results</h4>
+    <a href="/results/list" class="btn btn-dark btn-action">View Results List</a>
+  </div> -->
+</div>
+
+<%- include('../partials/footer') %>
+
+<style>
+  body {
+    background-color: #f3f7fa;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .dashboard-container {
+    padding: 50px 20px;
+  }
+
+  .card-custom {
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+    margin-bottom: 25px;
+  }
+
+  .btn-action {
+    width: 200px;
+    margin: 10px;
+    font-weight: 500;
+    border-radius: 10px;
+  }
+</style>

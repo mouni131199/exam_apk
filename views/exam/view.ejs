@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="mb-3">📘 Exam: <%= exam.title %></h2>
+
+      <p><strong>Description:</strong> <%= exam.description || "—" %></p>
+      <p><strong>Author:</strong> <%= exam.author %></p>
+      <p><strong>Total Questions:</strong> <%= exam.numberOfQuestions %></p>
+      <p>
+        <strong>Status:</strong>
+        <span class="badge <%= exam.isCompleted ? 'bg-success' : 'bg-secondary' %>">
+          <%= exam.isCompleted ? "Completed" : "Incomplete" %>
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h4>📋 Questions</h4>
+
+    <% if (questions.length === 0) { %>
+      <p class="text-muted">No questions added yet.</p>
+    <% } else { %>
+      <ul class="list-group">
+        <% questions.forEach(q => { %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>Q: <%= q.questionText %></span>
+            <div>
+              <a href="/question/edit/<%= q._id %>" class="btn btn-sm btn-outline-primary me-2">✏️ Edit</a>
+              <form action="/question/delete/<%= q._id %>" method="POST" class="d-inline" onsubmit="return confirm('Delete this question?')">
+                <button type="submit" class="btn btn-sm btn-outline-danger">🗑 Delete</button>
+               
+              </form>
+              <a href="/exam/results/<%= exam._id %>" class="btn btn-success mt-4">📊 View Results</a>
+
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <a href="/exam/list" class="btn btn-secondary mt-4">← Back to Exam List</a>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

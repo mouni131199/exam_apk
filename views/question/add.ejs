@@ -1,0 +1,130 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+  <!-- Flash Messages -->
+ <% if (error && error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+<% if (success && success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= success[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+
+
+  <!-- Header -->
+  <div class="mb-4">
+    <h4>Add Questions to "<%= exam.title %>"</h4>
+    <p class="text-muted">Remaining Questions: <span class="badge bg-info"><%= remaining %></span></p>
+  </div>
+
+  <!-- Add Question Form -->
+  <form action="/question/add/<%= exam._id %>" method="POST" class="card p-4 shadow-sm mb-5">
+    <input type="hidden" name="exam" value="<%= exam._id %>">
+
+    <div class="mb-3">
+      <label class="form-label">Question Text</label>
+      <input type="text" name="questionText" class="form-control" required placeholder="Enter your question">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Explanation (optional)</label>
+      <textarea name="explanation" class="form-control" placeholder="Hint or explanation"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Options</label>
+      <% for (let i = 0; i < 4; i++) { %>
+        <input type="text" name="options[]" class="form-control mb-2 option-field" placeholder="Option <%= i + 1 %>" required>
+      <% } %>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Correct Answer(s)</label><br>
+      <% for (let i = 0; i < 4; i++) { %>
+        <div class="form-check form-check-inline">
+          <input type="checkbox" name="correctAnswers[]" class="form-check-input correct-checkbox" value="">
+          <label class="form-check-label">Option <%= i + 1 %></label>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="form-check mb-3">
+      <input type="checkbox" name="allowMultipleAnswers" class="form-check-input" id="multipleAnswers">
+      <label class="form-check-label" for="multipleAnswers">Allow multiple correct answers</label>
+    </div>
+
+    <div class="d-flex">
+      <button type="submit" class="btn btn-success me-3">Add Question</button>
+      <% if (remaining === 0) { %>
+        <a href="/exam/list" class="btn btn-secondary">Done</a>
+      <% } %>
+    </div>
+  </form>
+
+  <!-- Preview of Added Questions -->
+  <div class="card shadow-sm p-4">
+    <h5 class="mb-3">Preview of Added Questions</h5>
+
+    <% if (questions.length === 0) { %>
+      <p class="text-muted">No questions added yet.</p>
+    <% } else { %>
+      <ol class="list-group list-group-numbered">
+        <% questions.forEach((q) => { %>
+          <li class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div class="w-100 me-3">
+              <div class="fw-bold mb-2"><%= q.questionText %></div>
+
+              <ul class="list-unstyled ps-3">
+                <% q.options.forEach((opt, i) => { %>
+                  <li>
+                    <%= opt %>
+                    <% if (q.correctAnswers.includes(i)) { %>
+                      <span class="badge bg-success ms-2">Correct</span>
+                    <% } %>
+                  </li>
+                <% }) %>
+              </ul>
+
+              <% if (q.explanation) { %>
+                <small class="text-muted">Explanation: <%= q.explanation %></small>
+              <% } %>
+            </div>
+
+            <div class="mt-2 mt-md-0 d-flex gap-2">
+              <a href="/question/edit/<%= q._id %>" class="btn btn-sm btn-primary">Edit</a>
+              <form action="/question/delete/<%= q._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this question?');">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </div>
+          </li>
+        <% }); %>
+      </ol>
+    <% } %>
+  </div>
+</div>
+
+<!-- JS to sync checkboxes with options -->
+<script>
+  const optionInputs = document.querySelectorAll('.option-field');
+  const checkboxes = document.querySelectorAll('.correct-checkbox');
+
+  function syncCheckboxValues() {
+    optionInputs.forEach((input, index) => {
+      checkboxes[index].value = index; // Submit index instead of text value
+    });
+  }
+
+  optionInputs.forEach((input) => {
+    input.addEventListener('input', syncCheckboxValues);
+  });
+
+  window.addEventListener('DOMContentLoaded', syncCheckboxValues);
+</script>
+
+<%- include('../partials/footer') %>

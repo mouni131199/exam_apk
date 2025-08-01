@@ -1,0 +1,8 @@
+<%
+  const backHref = typeof backUrl !== 'undefined' ? backUrl : 'javascript:history.back()';
+%>
+<div class="mb-4">
+  <a href="<%= backHref %>" class="btn btn-outline-secondary">
+    ← Back
+  </a>
+</div>

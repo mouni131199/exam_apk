@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard | Exam Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f6f9fc;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .dashboard-container {
+      padding: 50px 20px;
+    }
+
+    .card-custom {
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+      background-color: #fff;
+      margin-bottom: 30px;
+    }
+
+    .btn-action {
+      width: 180px;
+      margin: 10px;
+      font-weight: 500;
+      border-radius: 10px;
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+    }
+
+    .status-pill {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: white;
+    }
+
+    .pill-success { background-color: #28a745; }
+    .pill-warning { background-color: #ffc107; }
+    .pill-info { background-color: #17a2b8; }
+    .pill-active { background-color: #dc3545; }
+
+    .search-input {
+      max-width: 300px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container dashboard-container">
+  <h2 class="mb-4 text-center">Student Dashboard</h2>
+  <p class="text-center text-muted">Welcome, <strong><%= user.email %></strong></p>
+
+<div class="text-center mb-4">
+  <a href="/auth/logout" class="btn btn-outline-danger">Logout</a>
+</div>
+
+  <a href="/" class="btn btn-outline-primary mb-3">
+    <i class="bi bi-house-door-fill"></i> Back to Home
+  </a>
+
+  <!-- ✅ Flash Messages -->
+  <% if (error && error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <% error.forEach((err) => { %>
+        <div><%= err %></div>
+      <% }) %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <% if (success && success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <% success.forEach((msg) => { %>
+        <div><%= msg %></div>
+      <% }) %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <!-- ✅ Available Exams -->
+  <div class="card-custom">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Available Exams</h5>
+      <input type="text" id="searchInput" class="form-control search-input" placeholder="Search by title">
+    </div>
+
+    <% if (activeExams.length === 0) { %>
+      <p class="text-muted text-center">No active exams available right now.</p>
+    <% } else { %>
+      <table class="table table-bordered" id="examTable">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="examTableBody">
+          <% activeExams.forEach((exam, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td class="exam-title"><%= exam.title %></td>
+              <td><%= exam.author %></td>
+              <td><%= exam.duration %> min</td>
+              <td><span class="status-pill pill-active">Active</span></td>
+              <td>
+                <a href="/exam/start/<%= exam._id %>" class="btn btn-danger btn-sm">Take Test</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <!-- ✅ Pagination -->
+      <nav>
+        <ul class="pagination justify-content-center" id="pagination"></ul>
+      </nav>
+    <% } %>
+  </div>
+<!-- Attempted Exams Section -->
+<div class="card-custom">
+  <h5 class="mb-3">Your Attempted Exams</h5>
+
+  <% if (attempts.length === 0) { %>
+    <p class="text-muted">You haven't attempted any exams yet.</p>
+  <% } else { %>
+    <table class="table table-bordered">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Exam Title</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% attempts.forEach((attempt, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= attempt.examId ? attempt.examId.title : "Unknown Exam" %></td>
+            <td>
+              <% if (attempt.examId && attempt.examId.showResults) { %>
+                <span class="status-pill pill-success">Result Released</span>
+              <% } else { %>
+                <span class="status-pill pill-warning">Pending</span>
+              <% } %>
+            </td>
+            <td>
+              <% if (attempt.examId && attempt.examId.showResults) { %>
+                <a href="/exam/result/<%= attempt._id %>" class="btn btn-success btn-sm">View Result</a>
+              <% } else { %>
+                <span class="badge bg-secondary">Hidden</span>
+              <% } %>
+
+              <% if (attempt.showQuestions) { %>
+                <a href="/student/questions/<%= attempt._id %>" class="btn btn-info btn-sm">View Paper</a>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</div>
+
+<!-- ✅ JS for Filters and Pagination -->
+<script>
+  const rowsPerPage = 5;
+  const tableBody = document.getElementById("examTableBody");
+  const rows = Array.from(tableBody.getElementsByTagName("tr"));
+  const pagination = document.getElementById("pagination");
+  const searchInput = document.getElementById("searchInput");
+
+  function displayPage(pageNumber) {
+    const start = (pageNumber - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    rows.forEach((row, index) => {
+      row.style.display = (index >= start && index < end) ? "" : "none";
+    });
+
+    renderPagination(pageNumber);
+  }
+
+  function renderPagination(currentPage) {
+    const pageCount = Math.ceil(rows.length / rowsPerPage);
+    pagination.innerHTML = "";
+
+    for (let i = 1; i <= pageCount; i++) {
+      const li = document.createElement("li");
+      li.className = "page-item" + (i === currentPage ? " active" : "");
+      li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+      li.addEventListener("click", (e) => {
+        e.preventDefault();
+        displayPage(i);
+      });
+      pagination.appendChild(li);
+    }
+  }
+
+  function applyFilter() {
+    const searchValue = searchInput.value.toLowerCase();
+    rows.forEach(row => {
+      const titleCell = row.querySelector(".exam-title").textContent.toLowerCase();
+      row.style.display = titleCell.includes(searchValue) ? "" : "none";
+    });
+    displayPage(1);
+  }
+
+  // Initialize
+  displayPage(1);
+  searchInput.addEventListener("keyup", applyFilter);
+</script>
+ 
+<!-- ✅ Include Bootstrap JS and closing tags -->
+<%- include('../partials/footer') %>
+</body>
+</html>

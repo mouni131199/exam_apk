@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+  <h3>Edit Admin</h3>
+
+  <% if (success) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+  <% if (error) { %>
+    <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+
+  <form action="/admin/edit/<%= admin._id %>" method="POST">
+    <div class="mb-3">
+      <label>Name:</label>
+      <input type="text" name="name" class="form-control" value="<%= admin.name %>" required>
+    </div>
+    <div class="mb-3">
+      <label>Email:</label>
+      <input type="email" name="email" class="form-control" value="<%= admin.email %>" required>
+    </div>
+    <button class="btn btn-primary">Update</button>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

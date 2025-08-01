@@ -1,0 +1,51 @@
+<%- include('../partials/header') %>
+
+<div class="container mt-5">
+  <%- include('../partials/backbutton') %>
+
+  <div class="card shadow-lg rounded">
+    <div class="card-body">
+      <h3 class="mb-4 text-primary fw-bold">📝 Create New Exam</h3>
+
+      <% if (success) { %>
+        <div class="alert alert-success"><%= success %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+      <% } %>
+
+      <form action="/exam/create" method="POST">
+        <div class="mb-3">
+          <label class="form-label">📌 Title</label>
+          <input type="text" name="title" class="form-control" placeholder="Enter exam title" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">📝 Description</label>
+          <textarea name="description" class="form-control" rows="3" placeholder="Brief description of the exam"></textarea>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">❓ Number of Questions</label>
+            <input type="number" name="numberOfQuestions" class="form-control" required min="1">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">👨‍🏫 Author</label>
+            <input type="text" name="author" class="form-control" placeholder="Exam creator" required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">⏱️ Duration (minutes)</label>
+          <input type="number" name="duration" class="form-control" required min="1" value="15">
+        </div>
+
+        <button type="submit" class="btn btn-success px-4">➕ Create Exam</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

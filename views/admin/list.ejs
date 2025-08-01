@@ -1,0 +1,29 @@
+<%- include('../partials/header') %>
+<div class="container mt-5">
+    <!-- ✅ Back Button -->
+  <a href="javascript:history.back()" class="btn btn-outline-secondary me-2">← Back</a>
+  <h3>Admins List</h3>
+  <% if (success) { %><div class="alert alert-success"><%= success %></div><% } %>
+  <% if (error) { %><div class="alert alert-danger"><%= error %></div><% } %>
+  <table class="table table-striped">
+    <thead>
+      <tr><th>#</th><th>Name</th><th>Email</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <% admins.forEach((admin, index) => { %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= admin.name %></td>
+          <td><%= admin.email %></td>
+          <td>
+            <a href="/admin/edit/<%= admin._id %>" class="btn btn-warning btn-sm">Edit</a>
+            <form action="/admin/delete/<%= admin._id %>" method="POST" style="display:inline;">
+              <button class="btn btn-danger btn-sm" onclick="return confirm('Delete admin?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../partials/footer') %>

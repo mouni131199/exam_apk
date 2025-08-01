@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Exams</title>
+
+  <!-- ✅ Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .table thead th {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <!-- ✅ Top Bar with Heading and Logout -->
+    <div class="top-bar">
+       <a href="javascript:history.back()" class="btn btn-outline-secondary me-2">← Back</a>
+      <h3 class="text-primary border-bottom pb-2">📘 All Exams</h3>
+      <a href="/auth/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+
+    <!-- ✅ Flash Messages -->
+    <% if (messages?.success?.length > 0) { %>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= messages.success[0] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <% if (messages?.error?.length > 0) { %>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= messages.error[0] %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <!-- ✅ Exam Table -->
+    <div class="table-responsive shadow rounded-3 bg-white p-3">
+      <% if (exams && exams.length > 0) { %>
+        <table class="table table-hover align-middle mb-0 table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>📌 Title</th>
+              <th>📝 Description</th>
+              <th>👨‍🏫 Author</th>
+              <th>❓ Questions</th>
+              <th>📊 Status</th>
+              <th>⚙️ Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% exams.forEach(exam => { %>
+              <tr>
+                <td><strong><%= exam.title %></strong></td>
+                <td><%= exam.description || "—" %></td>
+                <td><%= exam.author %></td>
+                <td><span class="badge bg-info text-dark"><%= exam.numberOfQuestions %></span></td>
+                <td>
+                  <span class="badge <%= exam.isCompleted ? 'bg-success' : 'bg-secondary' %>">
+                    <%= exam.isCompleted ? "Completed" : "Incomplete" %>
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <!-- ✅ View (All roles) -->
+                    <a href="/exam/view/<%= exam._id %>" class="btn btn-sm btn-outline-primary">View</a>
+
+                    <!-- ✅ Questions: Only for Admin
+                    <% if (user.role === 'admin') { %>
+                      <a href="/question/list/<%= exam._id %>" class="btn btn-sm btn-outline-info">Questions</a>
+                    <% } %> -->
+
+                    <!-- ✅ Toggle Activation: Admin and Superadmin -->
+                    <% if (user.role === 'admin' || user.role === 'superadmin') { %>
+                      <a href="/exam/toggle/<%= exam._id %>" class="btn btn-sm btn-outline-warning">
+                        <%= exam.isActive ? "Deactivate" : "Activate" %>
+                      </a>
+                    <% } %>
+
+                    <!-- ✅ Delete: Admin and Superadmin -->
+                    <% if (user.role === 'admin' || user.role === 'superadmin') { %>
+                      <form action="/exam/delete/<%= exam._id %>" method="POST" class="d-inline">
+                        <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete exam and all its questions?')">
+                          Delete
+                        </button>
+                      </form>
+                    <% } %>
+
+                    <!-- ✅ View Results -->
+                    <a href="/exam/results/<%= exam._id %>" class="btn btn-sm btn-outline-success">
+                      📊 Results
+                    </a>
+
+                    <!-- ✅ Toggle Result Visibility -->
+                   <!-- ✅ Toggle Result Visibility -->
+<% if (user.role === 'admin' || user.role === 'superadmin') { %>
+  <form action="/exam/results/toggle/<%= exam._id %>" method="POST" class="d-inline">
+    <button class="btn btn-sm <%= exam.showResults ? 'btn-outline-danger' : 'btn-outline-success' %>">
+      <%= exam.showResults ? '🔒 Hide Results' : '🔓 Show Results' %>
+    </button>
+  </form>
+<% } %>
+
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p class="text-muted">No exams available yet.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- ✅ Bootstrap JS -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+</body>
+</html>  

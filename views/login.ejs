@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Exam Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f0f8ff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+
+    .btn-custom {
+      width: 100%;
+      font-weight: bold;
+      border-radius: 10px;
+    }
+
+    .form-select {
+      border-radius: 10px;
+    }
+
+    .link-text {
+      font-size: 0.9rem;
+      margin-top: 10px;
+      display: block;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card bg-white">
+      <h2 class="text-center mb-4">Login to Exam Portal</h2>
+
+      <!-- ✅ Flash Messages -->
+      <% if (error && error.length > 0) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= error[0] %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+
+      <% if (success && success.length > 0) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= success[0] %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+
+      <!-- 🔙 Back Button -->
+      <div class="mb-3 text-end">
+        <a href="/" class="btn btn-outline-secondary btn-sm">← Back to Home</a>
+      </div>
+
+      <form action="/auth/login" method="POST">
+        <div class="mb-3">
+          <label for="role" class="form-label">Login As</label>
+          <select class="form-select" name="role" id="role" required>
+            <option value="">-- Select Role --</option>
+            <option value="student">Student</option>
+            <option value="admin">Admin</option>
+            <option value="superadmin">Super Admin</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" name="email" id="email" value="<%= rememberedEmail %>" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" name="password" id="password" required />
+        </div>
+
+        <!-- ✅ Remember Me Checkbox -->
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" name="remember" id="rememberCheck" <%= rememberedEmail ? 'checked' : '' %>>
+          <label class="form-check-label" for="rememberCheck">Remember me</label>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+          <a href="/student/forgot-password" class="link-text">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-custom mt-3">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ✅ Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

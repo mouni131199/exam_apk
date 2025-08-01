@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Super Admin Dashboard | Exam Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .dashboard-container {
+      padding: 50px;
+    }
+
+    .card-custom {
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background-color: white;
+      margin-bottom: 20px;
+    }
+
+    .btn-action {
+      width: 200px;
+      margin: 10px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .admin-table th, .admin-table td {
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container dashboard-container">
+    <h2 class="mb-4 text-center">Super Admin Dashboard</h2>
+
+    <div class="card-custom text-center">
+      <h4 class="mb-3">Admin Management</h4>
+      <a href="/admin/create" class="btn btn-primary btn-action">Create Admin</a>
+      <a href="/admin/list" class="btn btn-info btn-action">View Admins List</a>
+    </div>
+
+    <!-- Example Admins Table with Edit Button -->
+    <div class="card-custom">
+      <h5 class="mb-3">Admins List</h5>
+      <table class="table table-bordered admin-table">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% admins.forEach((admin, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= admin.name %></td>
+              <td><%= admin.email %></td>
+              <td>
+                <a href="/admin/edit/<%= admin._id %>" class="btn btn-warning btn-sm">Edit</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-custom text-center">
+      <h4 class="mb-3">Exam & Result Management</h4>
+      <a href="/exam/list" class="btn btn-secondary btn-action">View Exams List</a>
+     
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Exam Portal</a>
+    <div class="d-flex">
+      <a href="/auth/logout" class="btn btn-outline-danger">Logout</a>
+    </div>
+  </div>
+</nav>
+
+  </div>
+
+</body>
+</html>
