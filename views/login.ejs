@@ -47,6 +47,9 @@
       margin-top: 10px;
       display: block;
       text-align: right;
+      cursor: pointer;
+      color: #0d6efd;
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -91,23 +94,10 @@
           <input type="email" class="form-control" name="email" id="email" value="<%= rememberedEmail %>" required />
         </div>
 
-        <!-- <div class="mb-3">
+        <div class="mb-3">
           <label for="password" class="form-label">Password</label>
           <input type="password" class="form-control" name="password" id="password" required />
-        </div> -->
-        <div class="mb-3">
-  <label for="password" class="form-label">Password</label>
-  <div class="input-group">
-    <input 
-      type="password" 
-      class="form-control" 
-      name="password" 
-      id="password" 
-      required />
-    <span class="input-group-text" onclick="togglePassword('password')">👁</span>
-  </div>
-</div>
-
+        </div>
 
         <!-- ✅ Remember Me Checkbox -->
         <div class="form-check mb-3">
@@ -116,7 +106,7 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center">
-          <a href="/student/forgot-password" class="link-text">Forgot Password?</a>
+          <span class="link-text" onclick="handleForgotPassword(event)">Forgot Password?</span>
         </div>
 
         <button type="submit" class="btn btn-primary btn-custom mt-3">Login</button>
@@ -126,5 +116,26 @@
 
   <!-- ✅ Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ✅ Role Check Script -->
+  <script>
+    function handleForgotPassword(event) {
+      event.preventDefault();
+      const role = document.getElementById("role").value;
+
+      if (!role) {
+        alert("❗ Please select a role first.");
+        return;
+      }
+
+      if (role === "admin" || role === "superadmin") {
+        alert("⚠️ Password reset is accessible only to students.");
+        return;
+      }
+
+      // ✅ If student, redirect
+      window.location.href = "/student/forgot-password";
+    }
+  </script>
 </body>
 </html>

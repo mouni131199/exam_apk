@@ -35,7 +35,7 @@ router.get("/student", ensureAuthenticated, authorizeRole("student"), async (req
     const attempts = await Attempt.find({ studentId: student._id }).populate("examId");
 
     res.render("dashboards/student", {
-      user: req.session.user,
+      user: student,
       activeExams,
       messages: req.flash(), // ✅ Flash messages passed to EJS
       attempts,

@@ -59,6 +59,7 @@ router.post("/login", async (req, res) => {
       id: user._id,
       role,
       email: user.email,
+       name: user.name,
     };
 
     // ✅ Remember me
